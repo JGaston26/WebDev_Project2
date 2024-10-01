@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Project 2</title>
+		<style></style>
+		<script>
+			let num1,num2,num3,randNum,displayNum
+            function initialize(){
+                getRandomNum()
+                displayNum = document.getElementById("numBox");
+                display();
+            }
+			function getRandomNum(){
+				num1 = Math.floor(Math.random() * 3)+1;
+				num2 = Math.floor(Math.random() * 3)+1;
+				num3 = Math.floor(Math.random() * 3)+1;
+				
+				
+                let toString1 = num1.toString();
+                let toString2 = num2.toString();
+                let toString3 = num3.toString();
+                var concat = toString1+toString2+toString3;
+                randNum = concat
+			}
+            function display(){
+                displayNum.innerHTML = randNum
+            }
+            
+		</script>
+	<head>
+	
+	<body onload="initialize();">
+		<div id = "numBox"></div>
+	</body>
+</html>
