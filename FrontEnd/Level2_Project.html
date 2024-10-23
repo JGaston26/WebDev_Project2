@@ -1,24 +1,233 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Project 2</title>
-		<style></style>
-		<script>
-			let gVrnum1,gVrnum2,gVrnum3,gVrrandNum,gVrdisplayNum
-            function initialize(){
-                getRandomNum()
-                display();
+    <head>
+        <title>Halloween Match Game</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                background-color: #f0f0f0;
             }
-	
-            function display(){
-                displayNum.innerHTML = randNum
+            .instructions {
+                margin: 20px;
+                padding: 10px;
+                background-color: white;
+                border-radius: 5px;
+            }
+            .grid-item {
+                position: relative; 
+            }
+            .grid-item > img {
+                width: 200px; 
+                height: 200px; 
+                border-radius: 5px;
+                overflow: hidden;
+                cursor: pointer;
+            }
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                max-width: 850px;
+                margin: 0 auto;
+            }
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            .score-section {
+                margin: 20px;
+                font-size: 1.2em;
+            }
+            #reset-button {
+                padding: 10px 20px;
+                font-size: 1.1em;
+                margin: 10px;
+                cursor: pointer;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+            }
+            #comment {
+                margin: 20px;
+                font-style: italic;
+                color: #666;
+            }
+        </style>
+        <script>
+            let firstGuess = null;
+            let secondGuess = null;
+            let lockBoard = false;
+            let score = 0;
+            let matchedPairs = 0;
+
+            function initialize(){
+                shuffleGrid();
+                updateScore();
+            }
+    
+            function doGuess(element){
+                if(lockBoard) return;
+                if(element === firstGuess) return;
+                
+                const overlay = element.querySelector('.overlay');
+                if(!overlay) return;
+                
+                score++;
+                updateScore();
+                overlay.style.display = 'none';
+                
+                if(!firstGuess){
+                    firstGuess = element;
+                    return;
+                }
+                
+                secondGuess = element;
+                checkForMatch();
             }
             
-		</script>
-	<head>
-	
-	<body onload="initialize();">
-		<div id = ></div>
-		<img src = "Images/color-blank-square-icon-free-png.png"></img>
-	</body>
+            function checkForMatch(){
+                const img1 = firstGuess.querySelector('img:not(.overlay)').alt;
+                const img2 = secondGuess.querySelector('img:not(.overlay)').alt;
+                
+                if(img1 === img2){
+                    matchedPairs++;
+                    resetBoard();
+                    if(matchedPairs === 8){
+                        setTimeout(() => {
+                            alert('Congratulations! Game Complete!');
+                            displayComment();
+                        }, 500);
+                    }
+                } else {
+                    lockBoard = true;
+                    setTimeout(() => {
+                        firstGuess.querySelector('.overlay').style.display = '';
+                        secondGuess.querySelector('.overlay').style.display = '';
+                        resetBoard();
+                    }, 1000);
+                }
+            }
+            
+            function resetBoard(){
+                firstGuess = null;
+                secondGuess = null;
+                lockBoard = false;
+            }
+            
+            function shuffleGrid(){
+                const grid = document.getElementById('picture_grid');
+                const items = Array.from(grid.children);
+                for (let i = items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [items[i], items[j]] = [items[j], items[i]];
+                }
+                items.forEach(item => grid.appendChild(item));
+            }
+            
+            function updateScore(){
+                document.getElementById('score').textContent = score;
+            }
+            
+            function resetGame(){
+                score = 0;
+                matchedPairs = 0;
+                updateScore();
+                const overlays = document.querySelectorAll('.overlay');
+                overlays.forEach(overlay => overlay.style.display = '');
+                resetBoard();
+                shuffleGrid();
+                document.getElementById('comment').textContent = '';
+            }
+            
+            function displayComment(){
+                const comment = document.getElementById('comment');
+				comment.textContent = score <= 20 ? "Amazing! You have an incredible memory!" : 
+                     score <= 30 ? "Great job! Keep practicing!" : 
+                     "Well... at least you finished the game!";
+            }
+        </script>
+    </head>
+    
+    <body onload="initialize();">
+        <div class="instructions">
+            <h2>Halloween Match Game</h2>
+            <p>Click on two cards to find matching pairs. Try to complete the game in as few clicks as possible!</p>
+        </div>
+        
+        <div id="picture_grid" class="grid-container">
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Girl_Vs_Monster.jpg" alt="Girl_Vs_Monster">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Hocus_Pocus.jpg" alt="Hocus_Pocus">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Monster_House.jpg" alt="Monster_House">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Nightmare_Before_Christmas.jpg" alt="Nightmare_Before_Christmas">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Regular_Show_Fright_Pack.jpg" alt="Regular_Show_Fright_Pack">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Scardey_Pants.jpg" alt="Scardey_Pants">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Summerween.jpg" alt="Summerween">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Treehouse_of_Horror.jpg" alt="Treehouse_of_Horror">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Girl_Vs_Monster.jpg" alt="Girl_Vs_Monster">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Hocus_Pocus.jpg" alt="Hocus_Pocus">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Monster_House.jpg" alt="Monster_House">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Nightmare_Before_Christmas.jpg" alt="Nightmare_Before_Christmas">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Regular_Show_Fright_Pack.jpg" alt="Regular_Show_Fright_Pack">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Scardey_Pants.jpg" alt="Scardey_Pants">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Summerween.jpg" alt="Summerween">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+            <div onclick="doGuess(this);" class="grid-item">
+                <img src="Images/Treehouse_of_Horror.jpg" alt="Treehouse_of_Horror">
+                <img src="Images/blue_block.png" alt="blue_block" class="overlay">
+            </div>
+        </div>
+
+        <div class="score-section">
+            <h3>Clicks: <span id="score">0</span></h3>
+            <button id="reset-button" onclick="resetGame();">Reset Game</button>
+            <div id="comment"></div>
+        </div>
+    </body>
 </html>
