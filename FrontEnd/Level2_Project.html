@@ -57,13 +57,14 @@
             }
         </style>
         <script>
-            let firstGuess = null;
-            let secondGuess = null;
-            let lockBoard = false;
-            let score = 0;
-            let matchedPairs = 0;
+            let firstGuess,secondGuess,lockBoard,score,matchedPairs
 
             function initialize(){
+                firstGuess = null;
+                secondGuess = null;
+                lockBoard = false;
+                score = 0;
+                matchedPairs = 0;
                 shuffleGrid();
                 updateScore();
             }
@@ -97,7 +98,7 @@
                     resetBoard();
                     if(matchedPairs === 8){
                         setTimeout(() => {
-                            alert('Congratulations! Game Complete!');
+                            alert(`Congratulations! Game Complete! Score of ${score}`);
                             displayComment();
                         }, 500);
                     }
@@ -139,12 +140,12 @@
                 overlays.forEach(overlay => overlay.style.display = '');
                 resetBoard();
                 shuffleGrid();
-                document.getElementById('comment').textContent = '';
+                document.getElementById('comment').innerHTML = '';
             }
             
             function displayComment(){
                 const comment = document.getElementById('comment');
-				comment.textContent = score <= 20 ? "Amazing! You have an incredible memory!" : 
+				comment.innerHTML = score <= 20 ? "Amazing! You have an incredible memory!" : 
                      score <= 30 ? "Great job! Keep practicing!" : 
                      "Well... at least you finished the game!";
             }
@@ -155,6 +156,12 @@
         <div class="instructions">
             <h2>Halloween Match Game</h2>
             <p>Click on two cards to find matching pairs. Try to complete the game in as few clicks as possible!</p>
+        </div>
+
+        <div class="score-section">
+            <h3>Clicks: <span id="score">0</span></h3>
+            <button id="reset-button" onclick="resetGame();">Reset Game</button>
+            <div id="comment"></div>
         </div>
         
         <div id="picture_grid" class="grid-container">
@@ -222,12 +229,6 @@
                 <img src="Images/Treehouse_of_Horror.jpg" alt="Treehouse_of_Horror">
                 <img src="Images/blue_block.png" alt="blue_block" class="overlay">
             </div>
-        </div>
-
-        <div class="score-section">
-            <h3>Clicks: <span id="score">0</span></h3>
-            <button id="reset-button" onclick="resetGame();">Reset Game</button>
-            <div id="comment"></div>
         </div>
     </body>
 </html>
